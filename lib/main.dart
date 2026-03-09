@@ -1,54 +1,100 @@
-import 'package:cash_compass/classes/base_item.dart';
 import 'package:flutter/material.dart';
-import 'widgets/expense_record.dart';
-import 'classes/transaction.dart';
 import 'widgets/appbar.dart';
+import 'pages/accounts_page.dart';
+import 'pages/budget_goal_page.dart';
+import 'pages/categories_page.dart';
+import 'pages/transaction_page.dart';
+import 'constants/nav_destinations.dart';
+import 'constants/colors.dart' as clr;
 
 void main() {
-  runApp(MaterialApp(home: const RecordsPage()));
+  runApp(
+    MaterialApp(
+      theme: ThemeData(
+        navigationBarTheme: NavigationBarThemeData(
+          indicatorColor: Colors.transparent,
+          indicatorShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          iconTheme: WidgetStateProperty.resolveWith((
+            states,
+          ) {
+            if (states.contains(WidgetState.selected)) {
+              return IconThemeData(color: clr.greyBlue);
+            }
+
+            return IconThemeData(color: Colors.white);
+          }),
+          labelTextStyle: WidgetStateProperty.resolveWith((
+            states,
+          ) {
+            if (states.contains(WidgetState.selected)) {
+              return TextStyle(
+                color: clr.greyBlue,
+                fontWeight: FontWeight.bold,
+                fontSize: 10,
+                fontFamily: "Inter",
+              );
+            }
+
+            return TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 10,
+              fontFamily: "Inter",
+            );
+          }),
+          labelBehavior:
+              NavigationDestinationLabelBehavior.alwaysShow,
+        ),
+      ),
+      home: const RecordsPage(),
+    ),
+  );
 }
 
-class RecordsPage extends StatelessWidget {
+class RecordsPage extends StatefulWidget {
   const RecordsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Transaction sample = Transaction(
-      id: "1",
-      category: Category(
-        name: "Food",
-        imgAsset: "assets/images/cash-on-hand.svg",
-        id: "1",
-      ),
-      account: Account(
-        name: "Cash On Hand",
-        imgAsset: "assets/images/cash-on-hand",
-        id: "1",
-      ),
-      amount: 3500,
-      mode: TransactionMode.income,
-      date: DateTime.now(),
-    );
+  State<RecordsPage> createState() => _RecordsPageState();
+}
 
+class _RecordsPageState extends State<RecordsPage> {
+  int _index = 0;
+
+  final List<Widget> _pages = [
+    RecordsBody(),
+    TransactionPage(),
+    AccountsPage(),
+    CategoriesPage(),
+    BudgetGoalPage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(),
-      body: Padding(
-        padding: EdgeInsetsGeometry.symmetric(
-          vertical: 20.0,
-          horizontal: 10.0,
-        ),
-        child: Column(
-          children: [
-            ExpenseRecord(
-              transaction: sample,
-              onDelete: () {
-                debugPrint("DELETED!");
-              },
-            ),
-            const SizedBox(height: 10.0),
-          ],
-        ),
+      body: _pages[_index],
+      bottomNavigationBar: NavigationBar(
+        backgroundColor: clr.matteblack,
+        selectedIndex: _index,
+        labelBehavior:
+            NavigationDestinationLabelBehavior.alwaysShow,
+        onDestinationSelected: (idx) {
+          setState(() => _index = idx);
+        },
+        destinations: navDestinations,
       ),
     );
+  }
+}
+
+class RecordsBody extends StatelessWidget {
+  const RecordsBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text("Records");
   }
 }
