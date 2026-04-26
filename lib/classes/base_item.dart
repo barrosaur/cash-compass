@@ -1,6 +1,12 @@
-abstract class BaseItem {
+import 'package:hive/hive.dart';
+part 'base_item.g.dart';
+
+abstract class BaseItem extends HiveObject {
+  @HiveField(0)
   final String name;
+  @HiveField(1)
   final String imgAsset;
+  @HiveField(2)
   final String id;
 
   BaseItem({
@@ -10,6 +16,7 @@ abstract class BaseItem {
   });
 }
 
+@HiveType(typeId: 2)
 class Account extends BaseItem {
   Account({
     required super.name,
@@ -18,6 +25,7 @@ class Account extends BaseItem {
   });
 }
 
+@HiveType(typeId: 3)
 class Category extends BaseItem {
   Category({
     required super.name,
