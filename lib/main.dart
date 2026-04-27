@@ -1,3 +1,4 @@
+import 'package:cash_compass/classes/budget_goal.dart';
 import 'package:cash_compass/widgets/add_btn.dart';
 import 'package:flutter/material.dart';
 import 'pages/accounts_page.dart';
@@ -18,8 +19,10 @@ void main() async {
 
   Hive.registerAdapter(TransactionModeAdapter());
   Hive.registerAdapter(TransactionAdapter());
+  Hive.registerAdapter(BudgetGoalAdapter());
 
   await Hive.openBox<Transaction>('transaction');
+  await Hive.openBox<BudgetGoal>('budgetGoals');
 
   runApp(
     MaterialApp(
@@ -29,18 +32,14 @@ void main() async {
           indicatorShape: RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           ),
-          iconTheme: WidgetStateProperty.resolveWith((
-            states,
-          ) {
+          iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return IconThemeData(color: clr.greyBlue);
             }
 
             return IconThemeData(color: Colors.white);
           }),
-          labelTextStyle: WidgetStateProperty.resolveWith((
-            states,
-          ) {
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return TextStyle(
                 color: clr.greyBlue,
@@ -57,8 +56,7 @@ void main() async {
               fontFamily: "Inter",
             );
           }),
-          labelBehavior:
-              NavigationDestinationLabelBehavior.alwaysShow,
+          labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         ),
       ),
       home: const RecordsPage(),
@@ -94,18 +92,13 @@ class _RecordsPageState extends State<RecordsPage> {
       ),
       floatingActionButton: [1, 2, 3, 4].contains(_index)
           ? null
-          : AddBtn(
-              onToggle: () => setState(() => _index = 1),
-            ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.endFloat,
+          : AddBtn(onToggle: () => setState(() => _index = 1)),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
         backgroundColor: clr.matteblack,
         selectedIndex: _index,
-        labelBehavior:
-            NavigationDestinationLabelBehavior.alwaysShow,
-        onDestinationSelected: (idx) =>
-            setState(() => _index = idx),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        onDestinationSelected: (idx) => setState(() => _index = idx),
         destinations: navDestinations,
       ),
     );
@@ -115,16 +108,10 @@ class _RecordsPageState extends State<RecordsPage> {
 class RecordsBody extends StatelessWidget {
   const RecordsBody({super.key});
 
-  Map<DateTime, List<Transaction>> _groupByDate(
-    List<Transaction> all,
-  ) {
+  Map<DateTime, List<Transaction>> _groupByDate(List<Transaction> all) {
     final map = <DateTime, List<Transaction>>{};
     for (final t in all) {
-      final day = DateTime(
-        t.date.year,
-        t.date.month,
-        t.date.day,
-      );
+      final day = DateTime(t.date.year, t.date.month, t.date.day);
       map.putIfAbsent(day, () => []).add(t);
     }
     for (final list in map.values) {
@@ -136,29 +123,20 @@ class RecordsBody extends StatelessWidget {
   String _formatDayHeader(DateTime day) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
-    final yesterday = today.subtract(
-      const Duration(days: 1),
-    );
+    final yesterday = today.subtract(const Duration(days: 1));
 
-    final monthDay = DateFormat(
-      'MMMM d, yyy',
-    ).format(day).toUpperCase();
-    final weekDay = DateFormat(
-      'EEEE',
-    ).format(day).toUpperCase();
+    final monthDay = DateFormat('MMMM d, yyy').format(day).toUpperCase();
+    final weekDay = DateFormat('EEEE').format(day).toUpperCase();
 
     if (day == today) return "$monthDay: $weekDay • TODAY";
-    if (day == yesterday)
-      return "$monthDay: $weekDay • YESTERDAY";
+    if (day == yesterday) return "$monthDay: $weekDay • YESTERDAY";
     return "$monthDay: $weekDay";
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: Hive.box<Transaction>(
-        'transaction',
-      ).listenable(),
+      valueListenable: Hive.box<Transaction>('transaction').listenable(),
       builder: (context, Box<Transaction> box, _) {
         final all = box.values.toList();
 
@@ -186,10 +164,7 @@ class RecordsBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(
-                    top: 16,
-                    bottom: 6,
-                  ),
+                  padding: const EdgeInsets.only(top: 16, bottom: 6),
                   child: Text(
                     _formatDayHeader(day),
                     style: const TextStyle(
@@ -217,18 +192,13 @@ class RecordsBody extends StatelessWidget {
                         MaterialPageRoute(
                           builder: (_) => Scaffold(
                             appBar: AppBar(
-                              title: const Text(
-                                "Edit Transaction",
-                              ),
+                              title: const Text("Edit Transaction"),
                               backgroundColor: Colors.white,
-                              foregroundColor:
-                                  clr.matteblack,
+                              foregroundColor: clr.matteblack,
                               elevation: 0,
                             ),
                             body: Padding(
-                              padding: const EdgeInsets.all(
-                                10,
-                              ),
+                              padding: const EdgeInsets.all(10),
                               child: TransactionPage(),
                             ),
                           ),
