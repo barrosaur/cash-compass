@@ -1,4 +1,5 @@
 import 'package:cash_compass/classes/budget_goal.dart';
+import 'package:cash_compass/classes/base_item.dart';
 import 'package:cash_compass/widgets/add_btn.dart';
 import 'package:flutter/material.dart';
 import 'pages/accounts_page.dart';
@@ -23,6 +24,10 @@ void main() async {
 
   await Hive.openBox<Transaction>('transaction');
   await Hive.openBox<BudgetGoal>('budgetGoals');
+  Hive.registerAdapter(AccountAdapter());
+
+  await Hive.openBox<Transaction>('transaction');
+  await Hive.openBox<Account>('accounts');
 
   runApp(
     MaterialApp(
