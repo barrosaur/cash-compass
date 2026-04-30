@@ -201,8 +201,17 @@ class RecordsBody extends StatelessWidget {
                               elevation: 0,
                             ),
                             body: Padding(
+<<<<<<< HEAD
+                              padding: const EdgeInsets.all(
+                                10,
+                              ),
+                              child: TransactionPage(
+                                existing: t,
+                              ),
+=======
                               padding: const EdgeInsets.all(10),
                               child: TransactionPage(),
+>>>>>>> 7671cba5d4a7760747954aba61c09cee7a52f707
                             ),
                           ),
                         ),
