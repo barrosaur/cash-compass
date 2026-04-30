@@ -232,7 +232,9 @@ class RecordsBody extends StatelessWidget {
                               padding: const EdgeInsets.all(
                                 10,
                               ),
-                              child: TransactionPage(),
+                              child: TransactionPage(
+                                existing: t,
+                              ),
                             ),
                           ),
                         ),
