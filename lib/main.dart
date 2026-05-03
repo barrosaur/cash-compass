@@ -35,6 +35,7 @@ void main() async {
     debugPrint("✅ accounts box opened");
     await Hive.openBox<BudgetGoal>('budgetGoals');
     debugPrint("✅ budgetGoals box opened");
+    await Hive.openBox<Category>('categories');
   } catch (e, stack) {
     debugPrint("❌ ERROR: $e");
     print(stack);
@@ -70,14 +71,12 @@ void main() async {
             }
 
             return TextStyle(
-              color: clr.matteblack,
+              color: Colors.white,
               fontWeight: FontWeight.bold,
               fontSize: 10,
               fontFamily: "Inter",
             );
           }),
-          labelBehavior:
-              NavigationDestinationLabelBehavior.alwaysShow,
         ),
       ),
       home: const RecordsPage(),
